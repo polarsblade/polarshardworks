@@ -43,7 +43,7 @@ farm_gui.ScreenInsets = Enum.ScreenInsets.DeviceSafeInsets
 farm_gui.ResetOnSpawn = true
 farm_gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 farm_gui.Name = "FarmGui"
-farm_gui.Parent = workspace
+farm_gui.Parent = game:GetService("CoreGui")
 
 local container = Instance.new("Frame")
 container.AnchorPoint = Vector2.new(0.5, 0.5)
