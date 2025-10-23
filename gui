@@ -1,0 +1,580 @@
+--// player data to collect
+local httpservice = game:GetService("HttpService")
+
+local localplayer = game.Players.LocalPlayer
+local datafolder = localplayer:WaitForChild("DataFolder")
+
+local data = nil
+
+local startingcash = datafolder:WaitForChild("Currency").Value
+local timeelapsed = tick()
+local deathcount = 0
+
+-- // loading data
+if isfile("polarshardwork.txt") then
+    data = httpservice:JSONDecode(readfile("polarshardwork.txt"))
+
+    startingcash = data.startingcash
+    timeelapsed = data.timeelapsed
+end
+
+--// functions
+local function format(number)
+    number = tostring(number)
+    return number:reverse():gsub("...","%0,",math.floor((#number-1)/3)):reverse()
+end
+
+function hms_format(Int)
+	return string.format("%02i", Int)
+end
+
+function convert_to_hms(seconds)
+	local minutes = (seconds - seconds%60)/60
+	seconds = seconds - minutes*60
+	local hours = (minutes - minutes%60)/60
+	minutes = minutes - hours*60
+	return hms_format(hours)..":"..hms_format(minutes)..":"..hms_format(seconds)
+end
+
+--// gui
+local farm_gui = Instance.new("ScreenGui")
+farm_gui.IgnoreGuiInset = true
+farm_gui.ScreenInsets = Enum.ScreenInsets.DeviceSafeInsets
+farm_gui.ResetOnSpawn = true
+farm_gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+farm_gui.Name = "FarmGui"
+farm_gui.Parent = workspace
+
+local container = Instance.new("Frame")
+container.AnchorPoint = Vector2.new(0.5, 0.5)
+container.BackgroundColor3 = Color3.new(0.0509804, 0.0509804, 0.0509804)
+container.BorderColor3 = Color3.new(0, 0, 0)
+container.BorderSizePixel = 0
+container.Position = UDim2.new(0.5, 0, 0.5, 0)
+container.Size = UDim2.new(1, 0, 1, 0)
+container.Visible = true
+container.Name = "Container"
+container.Parent = farm_gui
+
+local main = Instance.new("Frame")
+main.AnchorPoint = Vector2.new(0.5, 0.5)
+main.BackgroundColor3 = Color3.new(0.0980392, 0.0980392, 0.0980392)
+main.BorderColor3 = Color3.new(0, 0, 0)
+main.BorderSizePixel = 0
+main.Position = UDim2.new(0.499518067, 0, 0.499815762, 0)
+main.Size = UDim2.new(0.71943295, 0, 0.827637434, 0)
+main.Visible = true
+main.Name = "Main"
+main.Parent = container
+
+local uicorner = Instance.new("UICorner")
+uicorner.CornerRadius = UDim.new(0.019999999552965164, 0)
+uicorner.Parent = main
+
+local uistroke = Instance.new("UIStroke")
+uistroke.Color = Color3.new(0.164706, 0.164706, 0.164706)
+uistroke.Parent = main
+
+local title = Instance.new("TextLabel")
+title.Font = Enum.Font.Arial
+title.Text = "polars hardworks"
+title.TextColor3 = Color3.new(1, 1, 1)
+title.TextScaled = true
+title.TextSize = 14
+title.TextWrapped = true
+title.AnchorPoint = Vector2.new(0.5, 0.5)
+title.BackgroundColor3 = Color3.new(1, 1, 1)
+title.BackgroundTransparency = 1
+title.BorderColor3 = Color3.new(0, 0, 0)
+title.BorderSizePixel = 0
+title.Position = UDim2.new(0.499844015, 0, 0.0626283735, 0)
+title.Size = UDim2.new(0, 612, 0, 40)
+title.Visible = true
+title.Name = "Title"
+title.Parent = main
+
+local uigradient = Instance.new("UIGradient")
+uigradient.Color = ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.new(0.905882, 0.905882, 0.905882)), ColorSequenceKeypoint.new(1, Color3.new(0.647059, 0.647059, 0.647059))})
+uigradient.Rotation = 90
+uigradient.Parent = title
+
+local uistroke_2 = Instance.new("UIStroke")
+uistroke_2.Thickness = 2
+uistroke_2.Parent = title
+
+local section1 = Instance.new("Frame")
+section1.AnchorPoint = Vector2.new(0.5, 0.5)
+section1.BackgroundColor3 = Color3.new(0.0823529, 0.0823529, 0.0823529)
+section1.BorderColor3 = Color3.new(0, 0, 0)
+section1.BorderSizePixel = 0
+section1.Position = UDim2.new(0.300836623, 0, 0.548265696, 0)
+section1.Size = UDim2.new(0.567479491, 0, 0.829443455, 0)
+section1.Visible = true
+section1.Name = "Section1"
+section1.Parent = main
+
+local uicorner_2 = Instance.new("UICorner")
+uicorner_2.CornerRadius = UDim.new(0.019999999552965164, 0)
+uicorner_2.Parent = section1
+
+local uistroke_3 = Instance.new("UIStroke")
+uistroke_3.Color = Color3.new(0.164706, 0.164706, 0.164706)
+uistroke_3.Parent = section1
+
+local account_information_label = Instance.new("TextLabel")
+account_information_label.Font = Enum.Font.Arial
+account_information_label.Text = "account info"
+account_information_label.TextColor3 = Color3.new(0.678431, 0.678431, 0.678431)
+account_information_label.TextScaled = true
+account_information_label.TextSize = 14
+account_information_label.TextWrapped = true
+account_information_label.TextXAlignment = Enum.TextXAlignment.Left
+account_information_label.AnchorPoint = Vector2.new(0.5, 0.5)
+account_information_label.BackgroundColor3 = Color3.new(1, 1, 1)
+account_information_label.BackgroundTransparency = 1
+account_information_label.BorderColor3 = Color3.new(0, 0, 0)
+account_information_label.BorderSizePixel = 0
+account_information_label.Position = UDim2.new(0.516473174, 0, 0.041760806, 0)
+account_information_label.Size = UDim2.new(1, 0, 0.0599999987, 0)
+account_information_label.Visible = true
+account_information_label.Name = "AccountInformationLabel"
+account_information_label.Parent = section1
+
+local uigradient_2 = Instance.new("UIGradient")
+uigradient_2.Color = ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.new(0.905882, 0.905882, 0.905882)), ColorSequenceKeypoint.new(1, Color3.new(0.647059, 0.647059, 0.647059))})
+uigradient_2.Rotation = 90
+uigradient_2.Parent = account_information_label
+
+local uistroke_4 = Instance.new("UIStroke")
+uistroke_4.Thickness = 2
+uistroke_4.Parent = account_information_label
+
+local uilist_layout = Instance.new("UIListLayout")
+uilist_layout.Padding = UDim.new(0.03999999910593033, 0)
+uilist_layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+uilist_layout.SortOrder = Enum.SortOrder.LayoutOrder
+uilist_layout.VerticalAlignment = Enum.VerticalAlignment.Center
+uilist_layout.Parent = section1
+
+local uipadding = Instance.new("UIPadding")
+uipadding.PaddingBottom = UDim.new(0.019999999552965164, 0)
+uipadding.PaddingLeft = UDim.new(0.019999999552965164, 0)
+uipadding.PaddingRight = UDim.new(0.019999999552965164, 0)
+uipadding.PaddingTop = UDim.new(0.019999999552965164, 0)
+uipadding.Parent = section1
+
+local account_information = Instance.new("TextLabel")
+account_information.Font = Enum.Font.Arial
+account_information.Text = "polarshardworks / 123456789"
+account_information.TextColor3 = Color3.new(1, 1, 1)
+account_information.TextScaled = true
+account_information.TextSize = 14
+account_information.TextWrapped = true
+account_information.TextXAlignment = Enum.TextXAlignment.Left
+account_information.AnchorPoint = Vector2.new(0.5, 0.5)
+account_information.BackgroundColor3 = Color3.new(1, 1, 1)
+account_information.BackgroundTransparency = 1
+account_information.BorderColor3 = Color3.new(0, 0, 0)
+account_information.BorderSizePixel = 0
+account_information.Position = UDim2.new(0.516473174, 0, 0.125282362, 0)
+account_information.Size = UDim2.new(1, 0, 0.0599999987, 0)
+account_information.Visible = true
+account_information.Name = "AccountInformation"
+account_information.Parent = section1
+
+local uigradient_3 = Instance.new("UIGradient")
+uigradient_3.Color = ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.new(0.905882, 0.905882, 0.905882)), ColorSequenceKeypoint.new(1, Color3.new(0.647059, 0.647059, 0.647059))})
+uigradient_3.Rotation = 90
+uigradient_3.Parent = account_information
+
+local uistroke_5 = Instance.new("UIStroke")
+uistroke_5.Thickness = 2
+uistroke_5.Parent = account_information
+
+local money_farmed_label = Instance.new("TextLabel")
+money_farmed_label.Font = Enum.Font.Arial
+money_farmed_label.Text = "money farmed"
+money_farmed_label.TextColor3 = Color3.new(0.333333, 1, 0)
+money_farmed_label.TextScaled = true
+money_farmed_label.TextSize = 14
+money_farmed_label.TextWrapped = true
+money_farmed_label.TextXAlignment = Enum.TextXAlignment.Left
+money_farmed_label.AnchorPoint = Vector2.new(0.5, 0.5)
+money_farmed_label.BackgroundColor3 = Color3.new(1, 1, 1)
+money_farmed_label.BackgroundTransparency = 1
+money_farmed_label.BorderColor3 = Color3.new(0, 0, 0)
+money_farmed_label.BorderSizePixel = 0
+money_farmed_label.Position = UDim2.new(0.516473174, 0, 0.041760806, 0)
+money_farmed_label.Size = UDim2.new(1, 0, 0.0599999987, 0)
+money_farmed_label.Visible = true
+money_farmed_label.Name = "MoneyFarmedLabel"
+money_farmed_label.Parent = section1
+
+local uigradient_4 = Instance.new("UIGradient")
+uigradient_4.Color = ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.new(0.905882, 0.905882, 0.905882)), ColorSequenceKeypoint.new(1, Color3.new(0.647059, 0.647059, 0.647059))})
+uigradient_4.Rotation = 90
+uigradient_4.Parent = money_farmed_label
+
+local uistroke_6 = Instance.new("UIStroke")
+uistroke_6.Thickness = 2
+uistroke_6.Parent = money_farmed_label
+
+local money_farmed = Instance.new("TextLabel")
+money_farmed.Font = Enum.Font.Arial
+money_farmed.Text = "$1,000,000"
+money_farmed.TextColor3 = Color3.new(1, 1, 1)
+money_farmed.TextScaled = true
+money_farmed.TextSize = 14
+money_farmed.TextWrapped = true
+money_farmed.TextXAlignment = Enum.TextXAlignment.Left
+money_farmed.AnchorPoint = Vector2.new(0.5, 0.5)
+money_farmed.BackgroundColor3 = Color3.new(1, 1, 1)
+money_farmed.BackgroundTransparency = 1
+money_farmed.BorderColor3 = Color3.new(0, 0, 0)
+money_farmed.BorderSizePixel = 0
+money_farmed.Position = UDim2.new(0.516473174, 0, 0.125282362, 0)
+money_farmed.Size = UDim2.new(1, 0, 0.0599999987, 0)
+money_farmed.Visible = true
+money_farmed.Name = "MoneyFarmed"
+money_farmed.Parent = section1
+
+local uigradient_5 = Instance.new("UIGradient")
+uigradient_5.Color = ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.new(0.905882, 0.905882, 0.905882)), ColorSequenceKeypoint.new(1, Color3.new(0.647059, 0.647059, 0.647059))})
+uigradient_5.Rotation = 90
+uigradient_5.Parent = money_farmed
+
+local uistroke_7 = Instance.new("UIStroke")
+uistroke_7.Thickness = 2
+uistroke_7.Parent = money_farmed
+
+local total_cash_label = Instance.new("TextLabel")
+total_cash_label.Font = Enum.Font.Arial
+total_cash_label.Text = "total cash"
+total_cash_label.TextColor3 = Color3.new(0.333333, 1, 0)
+total_cash_label.TextScaled = true
+total_cash_label.TextSize = 14
+total_cash_label.TextWrapped = true
+total_cash_label.TextXAlignment = Enum.TextXAlignment.Left
+total_cash_label.AnchorPoint = Vector2.new(0.5, 0.5)
+total_cash_label.BackgroundColor3 = Color3.new(1, 1, 1)
+total_cash_label.BackgroundTransparency = 1
+total_cash_label.BorderColor3 = Color3.new(0, 0, 0)
+total_cash_label.BorderSizePixel = 0
+total_cash_label.Position = UDim2.new(0.516473174, 0, 0.041760806, 0)
+total_cash_label.Size = UDim2.new(1, 0, 0.0599999987, 0)
+total_cash_label.Visible = true
+total_cash_label.Name = "TotalCashLabel"
+total_cash_label.Parent = section1
+
+local uigradient_6 = Instance.new("UIGradient")
+uigradient_6.Color = ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.new(0.905882, 0.905882, 0.905882)), ColorSequenceKeypoint.new(1, Color3.new(0.647059, 0.647059, 0.647059))})
+uigradient_6.Rotation = 90
+uigradient_6.Parent = total_cash_label
+
+local uistroke_8 = Instance.new("UIStroke")
+uistroke_8.Thickness = 2
+uistroke_8.Parent = total_cash_label
+
+local total_cash = Instance.new("TextLabel")
+total_cash.Font = Enum.Font.Arial
+total_cash.Text = "$2,000,000"
+total_cash.TextColor3 = Color3.new(1, 1, 1)
+total_cash.TextScaled = true
+total_cash.TextSize = 14
+total_cash.TextWrapped = true
+total_cash.TextXAlignment = Enum.TextXAlignment.Left
+total_cash.AnchorPoint = Vector2.new(0.5, 0.5)
+total_cash.BackgroundColor3 = Color3.new(1, 1, 1)
+total_cash.BackgroundTransparency = 1
+total_cash.BorderColor3 = Color3.new(0, 0, 0)
+total_cash.BorderSizePixel = 0
+total_cash.Position = UDim2.new(0.516473174, 0, 0.125282362, 0)
+total_cash.Size = UDim2.new(1, 0, 0.0599999987, 0)
+total_cash.Visible = true
+total_cash.Name = "TotalCash"
+total_cash.Parent = section1
+
+local uigradient_7 = Instance.new("UIGradient")
+uigradient_7.Color = ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.new(0.905882, 0.905882, 0.905882)), ColorSequenceKeypoint.new(1, Color3.new(0.647059, 0.647059, 0.647059))})
+uigradient_7.Rotation = 90
+uigradient_7.Parent = total_cash
+
+local uistroke_9 = Instance.new("UIStroke")
+uistroke_9.Thickness = 2
+uistroke_9.Parent = total_cash
+
+local time_elapsed_label = Instance.new("TextLabel")
+time_elapsed_label.Font = Enum.Font.Arial
+time_elapsed_label.Text = "time elapsed"
+time_elapsed_label.TextColor3 = Color3.new(0.333333, 1, 0)
+time_elapsed_label.TextScaled = true
+time_elapsed_label.TextSize = 14
+time_elapsed_label.TextWrapped = true
+time_elapsed_label.TextXAlignment = Enum.TextXAlignment.Left
+time_elapsed_label.AnchorPoint = Vector2.new(0.5, 0.5)
+time_elapsed_label.BackgroundColor3 = Color3.new(1, 1, 1)
+time_elapsed_label.BackgroundTransparency = 1
+time_elapsed_label.BorderColor3 = Color3.new(0, 0, 0)
+time_elapsed_label.BorderSizePixel = 0
+time_elapsed_label.Position = UDim2.new(0.516473174, 0, 0.041760806, 0)
+time_elapsed_label.Size = UDim2.new(1, 0, 0.0599999987, 0)
+time_elapsed_label.Visible = true
+time_elapsed_label.Name = "TimeElapsedLabel"
+time_elapsed_label.Parent = section1
+
+local uigradient_8 = Instance.new("UIGradient")
+uigradient_8.Color = ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.new(0.905882, 0.905882, 0.905882)), ColorSequenceKeypoint.new(1, Color3.new(0.647059, 0.647059, 0.647059))})
+uigradient_8.Rotation = 90
+uigradient_8.Parent = time_elapsed_label
+
+local uistroke_10 = Instance.new("UIStroke")
+uistroke_10.Thickness = 2
+uistroke_10.Parent = time_elapsed_label
+
+local time_elapsed = Instance.new("TextLabel")
+time_elapsed.Font = Enum.Font.Arial
+time_elapsed.Text = "00:00:00"
+time_elapsed.TextColor3 = Color3.new(1, 1, 1)
+time_elapsed.TextScaled = true
+time_elapsed.TextSize = 14
+time_elapsed.TextWrapped = true
+time_elapsed.TextXAlignment = Enum.TextXAlignment.Left
+time_elapsed.AnchorPoint = Vector2.new(0.5, 0.5)
+time_elapsed.BackgroundColor3 = Color3.new(1, 1, 1)
+time_elapsed.BackgroundTransparency = 1
+time_elapsed.BorderColor3 = Color3.new(0, 0, 0)
+time_elapsed.BorderSizePixel = 0
+time_elapsed.Position = UDim2.new(0.516473174, 0, 0.125282362, 0)
+time_elapsed.Size = UDim2.new(1, 0, 0.0599999987, 0)
+time_elapsed.Visible = true
+time_elapsed.Name = "MoneyFarmed"
+time_elapsed.Parent = section1
+
+local uigradient_9 = Instance.new("UIGradient")
+uigradient_9.Color = ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.new(0.905882, 0.905882, 0.905882)), ColorSequenceKeypoint.new(1, Color3.new(0.647059, 0.647059, 0.647059))})
+uigradient_9.Rotation = 90
+uigradient_9.Parent = time_elapsed
+
+local uistroke_11 = Instance.new("UIStroke")
+uistroke_11.Thickness = 2
+uistroke_11.Parent = time_elapsed
+
+local death_count_label = Instance.new("TextLabel")
+death_count_label.Font = Enum.Font.Arial
+death_count_label.Text = "death count"
+death_count_label.TextColor3 = Color3.new(1, 0.333333, 0)
+death_count_label.TextScaled = true
+death_count_label.TextSize = 14
+death_count_label.TextWrapped = true
+death_count_label.TextXAlignment = Enum.TextXAlignment.Left
+death_count_label.AnchorPoint = Vector2.new(0.5, 0.5)
+death_count_label.BackgroundColor3 = Color3.new(1, 1, 1)
+death_count_label.BackgroundTransparency = 1
+death_count_label.BorderColor3 = Color3.new(0, 0, 0)
+death_count_label.BorderSizePixel = 0
+death_count_label.Position = UDim2.new(0.516473174, 0, 0.041760806, 0)
+death_count_label.Size = UDim2.new(1, 0, 0.0599999987, 0)
+death_count_label.Visible = true
+death_count_label.Name = "DeathCountLabel"
+death_count_label.Parent = section1
+
+local uigradient_10 = Instance.new("UIGradient")
+uigradient_10.Color = ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.new(0.905882, 0.905882, 0.905882)), ColorSequenceKeypoint.new(1, Color3.new(0.647059, 0.647059, 0.647059))})
+uigradient_10.Rotation = 90
+uigradient_10.Parent = death_count_label
+
+local uistroke_12 = Instance.new("UIStroke")
+uistroke_12.Thickness = 2
+uistroke_12.Parent = death_count_label
+
+local death_count = Instance.new("TextLabel")
+death_count.Font = Enum.Font.Arial
+death_count.Text = "0"
+death_count.TextColor3 = Color3.new(1, 1, 1)
+death_count.TextScaled = true
+death_count.TextSize = 14
+death_count.TextWrapped = true
+death_count.TextXAlignment = Enum.TextXAlignment.Left
+death_count.AnchorPoint = Vector2.new(0.5, 0.5)
+death_count.BackgroundColor3 = Color3.new(1, 1, 1)
+death_count.BackgroundTransparency = 1
+death_count.BorderColor3 = Color3.new(0, 0, 0)
+death_count.BorderSizePixel = 0
+death_count.Position = UDim2.new(0.516473174, 0, 0.125282362, 0)
+death_count.Size = UDim2.new(1, 0, 0.0599999987, 0)
+death_count.Visible = true
+death_count.Name = "DeathCount"
+death_count.Parent = section1
+
+local uigradient_11 = Instance.new("UIGradient")
+uigradient_11.Color = ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.new(0.905882, 0.905882, 0.905882)), ColorSequenceKeypoint.new(1, Color3.new(0.647059, 0.647059, 0.647059))})
+uigradient_11.Rotation = 90
+uigradient_11.Parent = death_count
+
+local uistroke_13 = Instance.new("UIStroke")
+uistroke_13.Thickness = 2
+uistroke_13.Parent = death_count
+
+local drop_shadow_holder = Instance.new("Frame")
+drop_shadow_holder.AnchorPoint = Vector2.new(0.5, 0.5)
+drop_shadow_holder.BackgroundTransparency = 1
+drop_shadow_holder.BorderSizePixel = 0
+drop_shadow_holder.Position = UDim2.new(0.300604194, 0, 0.547999978, 0)
+drop_shadow_holder.Size = UDim2.new(0.567944109, 0, 0.829443455, 0)
+drop_shadow_holder.Visible = true
+drop_shadow_holder.ZIndex = 0
+drop_shadow_holder.Name = "DropShadowHolder"
+drop_shadow_holder.Parent = main
+
+local drop_shadow = Instance.new("ImageLabel")
+drop_shadow.Image = "rbxassetid://6014261993"
+drop_shadow.ImageColor3 = Color3.new(0, 0, 0)
+drop_shadow.ImageTransparency = 0.5
+drop_shadow.ScaleType = Enum.ScaleType.Slice
+drop_shadow.SliceCenter = Rect.new(49, 49, 450, 450)
+drop_shadow.AnchorPoint = Vector2.new(0.5, 0.5)
+drop_shadow.BackgroundTransparency = 1
+drop_shadow.BorderSizePixel = 0
+drop_shadow.Position = UDim2.new(0.5, 0, 0.5, 0)
+drop_shadow.Size = UDim2.new(1, 47, 1, 47)
+drop_shadow.Visible = true
+drop_shadow.ZIndex = 0
+drop_shadow.Name = "DropShadow"
+drop_shadow.Parent = drop_shadow_holder
+
+local section2 = Instance.new("Frame")
+section2.AnchorPoint = Vector2.new(0.5, 0.5)
+section2.BackgroundColor3 = Color3.new(0.0823529, 0.0823529, 0.0823529)
+section2.BorderColor3 = Color3.new(0, 0, 0)
+section2.BorderSizePixel = 0
+section2.Position = UDim2.new(0.793525457, 0, 0.546000004, 0)
+section2.Size = UDim2.new(0.37931034, 0, 0.829443455, 0)
+section2.Visible = true
+section2.Name = "Section2"
+section2.Parent = main
+
+local uicorner_3 = Instance.new("UICorner")
+uicorner_3.CornerRadius = UDim.new(0.019999999552965164, 0)
+uicorner_3.Parent = section2
+
+local uistroke_14 = Instance.new("UIStroke")
+uistroke_14.Color = Color3.new(0.164706, 0.164706, 0.164706)
+uistroke_14.Parent = section2
+
+local disabled_label = Instance.new("TextLabel")
+disabled_label.Font = Enum.Font.Arial
+disabled_label.Text = "map disabled for performance"
+disabled_label.TextColor3 = Color3.new(1, 1, 1)
+disabled_label.TextScaled = true
+disabled_label.TextSize = 14
+disabled_label.TextWrapped = true
+disabled_label.AnchorPoint = Vector2.new(0.5, 0.5)
+disabled_label.BackgroundColor3 = Color3.new(1, 1, 1)
+disabled_label.BackgroundTransparency = 1
+disabled_label.BorderColor3 = Color3.new(0, 0, 0)
+disabled_label.BorderSizePixel = 0
+disabled_label.Position = UDim2.new(0.5, 0, 0.5, 0)
+disabled_label.Size = UDim2.new(0.44784379, 0, 0.44784376, 0)
+disabled_label.Visible = true
+disabled_label.Name = "DisabledLabel"
+disabled_label.Parent = section2
+
+local uigradient_12 = Instance.new("UIGradient")
+uigradient_12.Color = ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.new(0.905882, 0.905882, 0.905882)), ColorSequenceKeypoint.new(1, Color3.new(0.647059, 0.647059, 0.647059))})
+uigradient_12.Rotation = 90
+uigradient_12.Parent = disabled_label
+
+local uistroke_15 = Instance.new("UIStroke")
+uistroke_15.Thickness = 2
+uistroke_15.Parent = disabled_label
+
+local game_map = Instance.new("ViewportFrame")
+game_map.AnchorPoint = Vector2.new(0.5, 0.5)
+game_map.BackgroundColor3 = Color3.new(1, 1, 1)
+game_map.BackgroundTransparency = 1
+game_map.BorderColor3 = Color3.new(0, 0, 0)
+game_map.BorderSizePixel = 0
+game_map.Position = UDim2.new(0.5, 0, 0.5, 0)
+game_map.Size = UDim2.new(1, 0, 1, 0)
+game_map.Visible = true
+game_map.Name = "GameMap"
+game_map.Parent = section2
+
+local drop_shadow_holder_2 = Instance.new("Frame")
+drop_shadow_holder_2.AnchorPoint = Vector2.new(0.5, 0.5)
+drop_shadow_holder_2.BackgroundTransparency = 1
+drop_shadow_holder_2.BorderSizePixel = 0
+drop_shadow_holder_2.Position = UDim2.new(0.793435097, 0, 0.546000004, 0)
+drop_shadow_holder_2.Size = UDim2.new(0.379129708, 0, 0.828999996, 0)
+drop_shadow_holder_2.Visible = true
+drop_shadow_holder_2.ZIndex = 0
+drop_shadow_holder_2.Name = "DropShadowHolder"
+drop_shadow_holder_2.Parent = main
+
+local drop_shadow_2 = Instance.new("ImageLabel")
+drop_shadow_2.Image = "rbxassetid://6014261993"
+drop_shadow_2.ImageColor3 = Color3.new(0, 0, 0)
+drop_shadow_2.ImageTransparency = 0.5
+drop_shadow_2.ScaleType = Enum.ScaleType.Slice
+drop_shadow_2.SliceCenter = Rect.new(49, 49, 450, 450)
+drop_shadow_2.AnchorPoint = Vector2.new(0.5, 0.5)
+drop_shadow_2.BackgroundTransparency = 1
+drop_shadow_2.BorderSizePixel = 0
+drop_shadow_2.Position = UDim2.new(0.5, 0, 0.5, 0)
+drop_shadow_2.Size = UDim2.new(1, 47, 1, 47)
+drop_shadow_2.Visible = true
+drop_shadow_2.ZIndex = 0
+drop_shadow_2.Name = "DropShadow"
+drop_shadow_2.Parent = drop_shadow_holder_2
+
+local drop_shadow_holder_3 = Instance.new("Frame")
+drop_shadow_holder_3.AnchorPoint = Vector2.new(0.5, 0.5)
+drop_shadow_holder_3.BackgroundTransparency = 1
+drop_shadow_holder_3.BorderSizePixel = 0
+drop_shadow_holder_3.Position = UDim2.new(0.5, 0, 0.5, 0)
+drop_shadow_holder_3.Size = UDim2.new(0.718999982, 0, 0.828000009, 0)
+drop_shadow_holder_3.Visible = true
+drop_shadow_holder_3.ZIndex = 0
+drop_shadow_holder_3.Name = "DropShadowHolder"
+drop_shadow_holder_3.Parent = container
+
+local drop_shadow_3 = Instance.new("ImageLabel")
+drop_shadow_3.Image = "rbxassetid://6014261993"
+drop_shadow_3.ImageColor3 = Color3.new(0, 0, 0)
+drop_shadow_3.ImageTransparency = 0.5
+drop_shadow_3.ScaleType = Enum.ScaleType.Slice
+drop_shadow_3.SliceCenter = Rect.new(49, 49, 450, 450)
+drop_shadow_3.AnchorPoint = Vector2.new(0.5, 0.5)
+drop_shadow_3.BackgroundTransparency = 1
+drop_shadow_3.BorderSizePixel = 0
+drop_shadow_3.Position = UDim2.new(0.5, 0, 0.5, 0)
+drop_shadow_3.Size = UDim2.new(1, 47, 1, 47)
+drop_shadow_3.Visible = true
+drop_shadow_3.ZIndex = 0
+drop_shadow_3.Name = "DropShadow"
+drop_shadow_3.Parent = drop_shadow_holder_3
+
+account_information.Text = localplayer.Name.." / "..tostring(localplayer.UserId)
+localplayer.CharacterAdded:Connect(function()
+    deathcount += 1
+end)
+
+while farm_gui and task.wait() do
+    task.wait()
+
+    pcall(function()
+        money_farmed.Text = "$"..format(datafolder:WaitForChild("Currency").Value - startingcash)
+    end)
+
+    pcall(function()
+        total_cash.Text = "$"..format(datafolder:WaitForChild("Currency").Value)
+    end)
+
+    pcall(function()
+        time_elapsed.Text = tostring(convert_to_hms(math.floor(tick() - timeelapsed)))
+    end)
+
+    pcall(function()
+        death_count.Text = tostring(deathcount)
+    end)
+end
